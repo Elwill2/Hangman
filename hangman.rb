@@ -1,5 +1,5 @@
 
-
+require "yaml"
 
 class Dictionary 
   def random_word
@@ -80,7 +80,7 @@ class Game
 
   def ask_letter_until_valid
     guess = ask_letter
-    until valid_letter?(guess)
+    until valid_letter?(guess)  ||  guess == "0"
     puts "That's not a single letter"
     guess = ask_letter
     end
@@ -94,14 +94,18 @@ class Game
     puts "You've already tried these letters : "
     puts @board.tried_letters  
     end
-    @board.guesses_left
     if @board.guesses_left == 1 
     puts "You have #{@board.guesses_left} guess left." 
-    else @board.guesses_left
+    else 
     puts "You have #{@board.guesses_left} guesses left."
     end
+    puts "You can save at anytime by pressing 0."
     guess = ask_letter_until_valid
-    if @board.letter_used?(guess)
+    if guess == "0"
+      File.write("hangman_save.yaml", @board.to_yaml)
+      puts "Game saved." 
+      exit
+    elsif @board.letter_used?(guess)
       puts "You've already played this letter. Pick another one."
     else @board.pick_letter(guess)
     end

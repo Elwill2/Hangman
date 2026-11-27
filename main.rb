@@ -1,12 +1,20 @@
-require_relative "hangman"
+require_relative "lib/board"
+require_relative "lib/dictionary"
+require_relative "lib/game"
+require_relative "lib/save_file"
 
-puts "Do you want to load the last save game or play a new one ? Type 1 to load the last game or 2 for a new one."
-answer = gets.chomp
-if answer == "1" && File.exist?("hangman_save.yaml")
-  board = YAML.load(File.read("hangman_save.yaml"), permitted_classes: [Board])
-else 
-  word = Dictionary.new.random_word 
-  board = Board.new(word) 
+save_file = SaveFile.new
+
+answer = nil
+until %w[1 2].include?(answer)
+  puts "Type 1 to load your last saved game, or 2 to start a new one."
+  line = $stdin.gets
+  exit if line.nil?
+  answer = line.strip
 end
-game = Game.new(board)
-game.play_game
+
+board = save_file.load if answer == "1"
+puts "No saved game found. Starting a new one." if answer == "1" && board.nil?
+board ||= Board.new(Dictionary.new.random_word)
+
+Game.new(board, save_file).play

@@ -1,0 +1,14 @@
+# Run `rubocop` to check style, or `rubocop -a` to fix what it can automatically.
+AllCops:
+  NewCops: enable
+
+# Kept off to keep the files simple while learning.
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/Documentation:
+  Exclude:
+    - "test/**/*"
